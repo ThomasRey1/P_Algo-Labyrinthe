@@ -8,13 +8,14 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
 {
     class Program
     {
-        const int LABYRINTHELENGTHX = 100,
+        const int LABYRINTHELENGTHX = 213,
                  LABYRINTHELENGTHY = 100;
         static Random r = new Random();
         static Box[,] tabBox = new Box[LABYRINTHELENGTHX, LABYRINTHELENGTHY];
 
         static Stack stackBox = new Stack(LABYRINTHELENGTHX * LABYRINTHELENGTHY + 1);
         static Stack stackSoluce = new Stack(LABYRINTHELENGTHX * LABYRINTHELENGTHY + 1);
+        static Stack stackSoluceBackward = new Stack(LABYRINTHELENGTHX * LABYRINTHELENGTHY + 1);
 
         static bool isFirstLoop = true;
 
@@ -97,6 +98,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                 {
                     stackBox.Push(currentBox);
                     stackSoluce.Push(currentBox);
+                    stackSoluceBackward.Push(currentBox);
 
                     currentBox.IsChecked = true;
                 }
@@ -139,6 +141,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                     if (!stackSoluce.IsEmpty() && stackSoluce.Top().ID != ((LABYRINTHELENGTHX - 1).ToString() + "," + (LABYRINTHELENGTHY - 1).ToString()))
                     {
                         stackSoluce.Pop();
+                        stackSoluceBackward.Pop();
                     }
                     stackBox.Pop();
                     CreateLabyrinthe(stackBox.Top(), "");
@@ -154,6 +157,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                 #endregion
                 DisplayLabyrinthe();
                 SolveLabyrinthe();
+                //SolveLabyrintheBackward();
             }
         }
 
@@ -300,143 +304,11 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Resolve the labyrinthe
+        /// </summary>
         public static void SolveLabyrinthe()
         {
-            #region chemin à l'envers
-            /*int positionX = 26;
-            int positionY = 18;
-            Console.ForegroundColor = ConsoleColor.Green;
-            while (!stackSoluce.IsEmpty())
-            {
-                for (int y = LABYRINTHELENGTHY - 1; y >= 0; y--)
-                {
-                    for (int x = LABYRINTHELENGTHX - 1; x >= 0; x--)
-                    {
-                        if (!tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            stackSoluce.Pop();
-                        }
-                        else if (!tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX + 2, positionY + 1);
-                            Console.Write("███");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (!tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX + 2, positionY + 1);
-                            Console.Write("███");
-                            stackSoluce.Pop();
-                        }
-                        else if (!tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (!tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            stackSoluce.Pop();
-                        }
-                        else if (!tabBox[x, y].East && tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY + 1);
-                            Console.Write("███");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (!tabBox[x, y].East && tabBox[x, y].North && tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 1, positionY + 1);
-                            Console.Write("███");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX + 2, positionY + 1);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX + 2, positionY + 1);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX, positionY + 1);
-                            Console.Write("███");
-                            stackSoluce.Pop();
-                        }
-                        else if (tabBox[x, y].East && tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluce.Top().ID)
-                        {
-                            Console.SetCursorPosition(positionX + 2, positionY + 1);
-                            Console.Write("█");
-                            Console.SetCursorPosition(positionX + 2, positionY + 2);
-                            Console.Write("█");
-                            stackSoluce.Pop();
-                        }
-                        positionX -= 3;
-                    }
-                    positionX = 26;
-                    if (!stackSoluce.IsEmpty())
-                    {
-                        positionY = stackSoluce.Top().LocationY * 2;
-                    }
-                    Thread.Sleep(10);
-                }
-            }
-            Console.ReadLine();*/
-            #endregion
-
             #region chemin à l'endroit
             int positionX = 0;
             int positionY = 0;
@@ -445,7 +317,17 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
             {
                 for (int x = 0; x < LABYRINTHELENGTHX; x++)
                 {
-                    if (!tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackBox.Top().ID)
+                    if (!tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackBox.Top().ID)
+                    {
+                        Console.SetCursorPosition(positionX + 1, positionY);
+                        Console.Write("█");
+                        Console.SetCursorPosition(positionX, positionY + 1);
+                        Console.Write("████");
+                        Console.SetCursorPosition(positionX + 1, positionY + 2);
+                        Console.Write("█");
+                        stackBox.Pop();
+                    }
+                    else if (!tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackBox.Top().ID)
                     {
                         Console.SetCursorPosition(positionX + 1, positionY);
                         Console.Write("█");
@@ -579,6 +461,167 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                     }
                 }
                 Thread.Sleep(10);
+            }
+            Console.ReadLine();
+            #endregion
+        }
+
+        /// <summary>
+        /// Resolve the labyrinthe in the backwards
+        /// </summary>
+        public static void SolveLabyrintheBackward()
+        {
+            #region chemin à l'envers
+            int positionX = (LABYRINTHELENGTHX - 1) * 3 - 1;
+            int positionY = stackSoluceBackward.Top().LocationY * 2;
+            Console.ForegroundColor = ConsoleColor.Red;
+            while (!stackSoluceBackward.IsEmpty())
+            {
+                for (int y = LABYRINTHELENGTHY - 1; y >= 0; y--)
+                {
+                    for (int x = LABYRINTHELENGTHX - 1; x >= 0; x--)
+                    {
+                        if (!tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 1, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("████");
+                            Console.SetCursorPosition(positionX + 1, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX + 2, positionY + 1);
+                            Console.Write("███");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX + 2, positionY + 1);
+                            Console.Write("███");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY + 1);
+                            Console.Write("███");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (!tabBox[x, y].East && tabBox[x, y].North && tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 1, positionY + 1);
+                            Console.Write("███");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && !tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX + 2, positionY + 1);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && !tabBox[x, y].North && tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX + 2, positionY + 1);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && tabBox[x, y].North && !tabBox[x, y].West && tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX, positionY + 1);
+                            Console.Write("███");
+                            stackSoluceBackward.Pop();
+                        }
+                        else if (tabBox[x, y].East && tabBox[x, y].North && tabBox[x, y].West && !tabBox[x, y].South && tabBox[x, y].ID == stackSoluceBackward.Top().ID)
+                        {
+                            Console.SetCursorPosition(positionX + 2, positionY + 1);
+                            Console.Write("█");
+                            Console.SetCursorPosition(positionX + 2, positionY + 2);
+                            Console.Write("█");
+                            stackSoluceBackward.Pop();
+                        }
+                        if (!stackBox.IsEmpty())
+                        {
+                            positionX -= 3;
+
+                            if (x < stackBox.Top().LocationX && stackBox.Top().LocationY == y)
+                            {
+                                x += 2;
+                                positionX += 6;
+                            }
+                        }
+                    }
+                    positionX = (LABYRINTHELENGTHX - 1) * 3 - 1;
+                    if (!stackSoluceBackward.IsEmpty())
+                    {
+                        positionY = stackSoluceBackward.Top().LocationY * 2;
+
+                    }
+                    Thread.Sleep(10);
+                }
             }
             Console.ReadLine();
             #endregion
