@@ -8,7 +8,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
 {
     class Program
     {
-        const int LABYRINTHELENGTHX = 213,
+        const int LABYRINTHELENGTHX = 100,
                  LABYRINTHELENGTHY = 100;
         static Random r = new Random();
         static Box[,] tabBox = new Box[LABYRINTHELENGTHX, LABYRINTHELENGTHY];
@@ -24,6 +24,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
         //                       {7, 8, 9} }; 
         static void Main(string[] args)
         {
+            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
             for (int y = 0; y < LABYRINTHELENGTHY; y++)
             {
                 for (int x = 0; x < LABYRINTHELENGTHX; x++)
@@ -472,7 +473,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
         public static void SolveLabyrintheBackward()
         {
             #region chemin à l'envers
-            int positionX = (LABYRINTHELENGTHX - 1) * 3 - 1;
+            int positionX = stackSoluceBackward.Top().LocationX * 3 - 1;
             int positionY = stackSoluceBackward.Top().LocationY * 2;
             Console.ForegroundColor = ConsoleColor.Red;
             while (!stackSoluceBackward.IsEmpty())
@@ -603,14 +604,13 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                             Console.Write("█");
                             stackSoluceBackward.Pop();
                         }
-                        if (!stackBox.IsEmpty())
+                        if (!stackSoluceBackward.IsEmpty())
                         {
-                            positionX -= 3;
+                            positionX = stackSoluceBackward.Top().LocationX * 3 - 1;
 
-                            if (x < stackBox.Top().LocationX && stackBox.Top().LocationY == y)
+                            if (x < stackSoluceBackward.Top().LocationX && stackSoluceBackward.Top().LocationY == y)
                             {
                                 x += 2;
-                                positionX += 6;
                             }
                         }
                     }
@@ -619,6 +619,10 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                     {
                         positionY = stackSoluceBackward.Top().LocationY * 2;
 
+                        if (y < stackSoluceBackward.Top().LocationY)
+                        {
+                            y += 2;
+                        }
                     }
                     Thread.Sleep(10);
                 }
