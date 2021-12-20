@@ -8,8 +8,8 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
 {
     class Program
     {
-        const int LABYRINTHELENGTHX = 100,
-                 LABYRINTHELENGTHY = 100;
+        const int LABYRINTHELENGTHX = 10,
+                 LABYRINTHELENGTHY = 10;
         static Random r = new Random();
         static Box[,] tabBox = new Box[LABYRINTHELENGTHX, LABYRINTHELENGTHY];
 
@@ -158,7 +158,7 @@ namespace P_P_Algo_labyrinthe_ThomasRey_SamuelDeveley
                 #endregion
                 DisplayLabyrinthe();
                 SolveLabyrinthe();
-                //SolveLabyrintheBackward();
+                SolveLabyrintheBackward();
             }
         }
 
